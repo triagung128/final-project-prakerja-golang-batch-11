@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	utils.LoadEnv()
+	// utils.LoadEnv()
 	configs.InitDatabase()
 
 	e := echo.New()
