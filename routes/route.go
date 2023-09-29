@@ -4,6 +4,7 @@ import (
 	authController "final-project-prakerja-golang-batch-11/controllers/auth"
 	courseController "final-project-prakerja-golang-batch-11/controllers/course"
 	enrollmentController "final-project-prakerja-golang-batch-11/controllers/enrollment"
+	reviewController "final-project-prakerja-golang-batch-11/controllers/review"
 	jwtMiddleware "final-project-prakerja-golang-batch-11/middleware"
 
 	echojwt "github.com/labstack/echo-jwt/v4"
@@ -23,4 +24,6 @@ func InitRoutes(e *echo.Echo) {
 	eJWT.Use(echojwt.WithConfig(jwtMiddleware.GetConfig()))
 	eJWT.GET("/enrollments", enrollmentController.GetEnrollmentsController)
 	eJWT.POST("/enrollments", enrollmentController.AddEnrollmentController)
+	eJWT.GET("/reviews", reviewController.GetReviewsController)
+	eJWT.POST("/reviews", reviewController.AddReviewContoller)
 }
