@@ -56,11 +56,11 @@ func LoginController(context echo.Context) error {
 	}
 
 	authResponse := response.Auth{
-		Id:          user.Id,
+		Id:          user.ID,
 		Name:        user.Name,
 		Email:       user.Email,
 		PhoneNumber: user.PhoneNumber,
-		Token:       middleware.GenerateTokenJWT(user.Id),
+		Token:       middleware.GenerateTokenJWT(user.ID),
 	}
 
 	return context.JSON(http.StatusOK, response.Base{

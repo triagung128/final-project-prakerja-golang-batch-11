@@ -3,9 +3,11 @@ package database
 import "time"
 
 type Review struct {
-	Id        uint   `gorm:"type:int(11);not null"`
-	UserID    uint   `gorm:"type:int(11);not null"`
-	CourseId  uint   `gorm:"type:int(11);not null"`
-	Review    string `gorm:"type:text;not null"`
-	CreatedAt time.Time
+	ID        uint      `gorm:"type:int(11);not null" json:"id"`
+	UserID    uint      `gorm:"type:int(11);not null" json:"userId"`
+	User      User      `json:"user"`
+	CourseID  uint      `gorm:"type:int(11);not null" json:"courseId"`
+	Course    Course    `json:"course"`
+	Review    string    `gorm:"type:text;not null" json:"review"`
+	CreatedAt time.Time `json:"createdAt"`
 }
