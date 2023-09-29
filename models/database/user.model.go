@@ -16,3 +16,8 @@ func (user *User) MapFromRegister(request request.RegisterRequest) {
 	user.Password = request.Password
 	user.PhoneNumber = request.PhoneNumber
 }
+
+func (user *User) MapFromLogin(request request.LoginRequest) {
+	user.Email = request.Email
+	user.Password = request.Password
+}
