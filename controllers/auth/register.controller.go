@@ -4,6 +4,7 @@ import (
 	"final-project-prakerja-golang-batch-11/configs"
 	"final-project-prakerja-golang-batch-11/middleware"
 	"final-project-prakerja-golang-batch-11/models/database"
+	"final-project-prakerja-golang-batch-11/models/request"
 	"final-project-prakerja-golang-batch-11/models/response"
 	"fmt"
 	"net/http"
@@ -14,13 +15,24 @@ import (
 )
 
 func RegisterController(context echo.Context) error {
-	var request database.User
+	request := new(request.RegisterRequest)
 	context.Bind(&request)
+
+	if err := context.Validate(request); err != nil {
+		return context.JSON(http.StatusBadRequest, response.Base{
+			Status:  false,
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
 
 	hashPassword, _ := bcrypt.GenerateFromPassword([]byte(request.Password), 14)
 	request.Password = string(hashPassword)
 
-	result := configs.DB.Create(&request)
+	user := new(database.User)
+	user.MapFromRegister(*request)
+
+	result := configs.DB.Create(&user)
 
 	if result.Error != nil {
 		if strings.Contains(result.Error.Error(), fmt.Sprintf("Duplicate entry '%s' for key 'idx_users_email", request.Email)) {
@@ -32,18 +44,18 @@ func RegisterController(context echo.Context) error {
 		} else {
 			return context.JSON(http.StatusInternalServerError, response.Base{
 				Status:  false,
-				Message: "Failed add data to database",
+				Message: "Failed Register",
 				Data:    nil,
 			})
 		}
 	}
 
 	authResponse := response.Auth{
-		Id:          request.Id,
-		Name:        request.Name,
-		Email:       request.Name,
-		PhoneNumber: request.PhoneNumber,
-		Token:       middleware.GenerateTokenJWT(request.Id),
+		Id:          user.Id,
+		Name:        user.Name,
+		Email:       user.Email,
+		PhoneNumber: user.PhoneNumber,
+		Token:       middleware.GenerateTokenJWT(user.Id),
 	}
 
 	return context.JSON(http.StatusOK, response.Base{
