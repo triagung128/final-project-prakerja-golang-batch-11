@@ -4,6 +4,7 @@ import (
 	"final-project-prakerja-golang-batch-11/configs"
 	"final-project-prakerja-golang-batch-11/routes"
 	"final-project-prakerja-golang-batch-11/utils"
+	"os"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
@@ -18,5 +19,5 @@ func main() {
 
 	routes.InitRoutes(e)
 
-	e.Start(":8000")
+	e.Start(":" + os.Getenv("PORT"))
 }
