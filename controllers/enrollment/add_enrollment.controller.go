@@ -4,6 +4,7 @@ import (
 	"errors"
 	"final-project-prakerja-golang-batch-11/configs"
 	"final-project-prakerja-golang-batch-11/models/database"
+	"final-project-prakerja-golang-batch-11/models/request"
 	"final-project-prakerja-golang-batch-11/models/response"
 	"final-project-prakerja-golang-batch-11/utils"
 	"net/http"
@@ -13,11 +14,11 @@ import (
 )
 
 func AddEnrollmentController(context echo.Context) error {
-	enrollment := new(database.Enrollment)
-	context.Bind(&enrollment)
+	request := new(request.EnrollmentRequest)
+	context.Bind(&request)
 
 	// Validation
-	if err := context.Validate(enrollment); err != nil {
+	if err := context.Validate(request); err != nil {
 		return context.JSON(http.StatusBadRequest, response.Base{
 			Status:  false,
 			Message: err.Error(),
@@ -27,7 +28,7 @@ func AddEnrollmentController(context echo.Context) error {
 
 	// Check Course ID
 	course := new(database.Course)
-	resultCourseCheck := configs.DB.Where("id = ?", enrollment.CourseID).First(&course)
+	resultCourseCheck := configs.DB.Where("id = ?", request.CourseID).First(&course)
 
 	if resultCourseCheck.Error != nil {
 		return context.JSON(http.StatusBadRequest, response.Base{
@@ -36,6 +37,9 @@ func AddEnrollmentController(context echo.Context) error {
 			Data:    nil,
 		})
 	}
+
+	enrollment := new(database.Enrollment)
+	enrollment.MapFromRequest(*request)
 
 	enrollment.UserID = utils.GetUserId(context)
 
